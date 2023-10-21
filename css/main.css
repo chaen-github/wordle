@@ -20,4 +20,12 @@ main {
   border: 3px solid #d3d6da;
   width: 60px;
   height: 60px;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+#time {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
 }
