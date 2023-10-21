@@ -1,0 +1,23 @@
+header {
+  border-bottom: 1px solid #d3d6da;
+  margin-bottom: 15px;
+}
+
+.wordle-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 10px;
+}
+
+.wordle-head img {
+  width: 30px;
+  cursor: pointer;
+}
+
+.wordle-title {
+  font-size: 27px;
+  font-family: "Dancing Script", cursive;
+  font-family: "Noto Serif", serif;
+  padding-left: 70px;
+}
