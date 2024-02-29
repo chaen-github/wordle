@@ -5,6 +5,33 @@ let index = 0; // 입력 후 다음 인덱스로 넘어가야하기 때문에 �
 let timer;
 
 function appStart() {
+  // 키보드를 클릭했을 때 정답칸에 입력되는 이벤트
+  const handleKeyboardClick = (event) => {
+    console.log(event.target.dataset.key);
+    const keyboardData = event.target.dataset.key;
+    const thisBlock = document.querySelector(
+      `.board-block[data-index='${attempts}${index}']` // 몇번째 시도, 몇번째 블럭(?)
+    );
+
+    if (keyboardData === "Backspace") {
+      handleBackspace();
+    } else if (keyboardData === "Enter") {
+      index === 5 ? handleEnterKey() : null;
+    } else if (index < 5) {
+      thisBlock.innerText = keyboardData;
+      index += 1;
+    }
+  };
+
+  // 각 키보드에 이벤트 추가
+  // for each 문으로 바꾸기
+  const keyboardBlocks = document.querySelectorAll(`.keyboard-block`);
+  console.log(keyboardBlocks);
+
+  for (let i = 0; i < keyboardBlocks.length; i++) {
+    keyboardBlocks[i].addEventListener("click", handleKeyboardClick);
+  }
+
   const displayGameover = () => {
     const div = document.createElement("div");
     div.innerText = "게임이 종료됐습니다.";
@@ -24,28 +51,48 @@ function appStart() {
     index = 0;
   };
 
-  const handleEnterKey = () => {
+  // 정답을 확인하는 코드
+  const handleEnterKey = async () => {
     let 맞은_갯수 = 0;
+
+    // 서버에서 정답을 받아오는 코드
+    //const 응답 = await fetch("/answer");
+    // await=서버에서 서버로 요청을 보낸 다음 응답이 올때까지 기다리는 구문
+    // 안넣으면 응답이 오지 않았는데 다음 코드가 실행됨 (에러남) / 응답을 선언한 것
+    //const 정답 = await 응답.json();
+    // 원하는 값만 추출하기 위해 json으로 바꾼 것 js에 맞는 포맷으로 바꿔준다
 
     for (let i = 0; i < 5; i++) {
       const block = document.querySelector(
         `.board-block[data-index='${attempts}${i}']`
       );
+
       const 입력한_글자 = block.innerText;
       const 정답_글자 = 정답[i];
+      const keyblock = document.querySelector(
+        `.keyboard-block[data-key='${입력한_글자}']`
+      );
+
       if (입력한_글자 === 정답_글자) {
         맞은_갯수 += 1;
         block.style.background = "#6AAA64";
-      } else if (정답.includes(입력한_글자)) block.style.background = "#C9B458";
-      else block.style.background = "#787C7E";
+        keyblock.style.background = "#6AAA64";
+      } else if (정답.includes(입력한_글자)) {
+        block.style.background = "#C9B458";
+        keyblock.style.background = "#C9B458";
+      } else {
+        block.style.background = "#787C7E";
+        keyblock.style.background = "#787C7E";
+      }
       block.style.color = "white";
+      keyblock.style.color = "white";
     }
     if (맞은_갯수 === 5) gameOver();
     else nextLine();
   };
 
   // 백스페이스를 눌렀을 때 발생하는 이벤트
-  const handelBackspace = () => {
+  const handleBackspace = () => {
     if (index > 0) {
       const preBlock = document.querySelector(
         `.board-block[data-index='${attempts}${index - 1}']`
@@ -63,7 +110,7 @@ function appStart() {
       `.board-block[data-index='${attempts}${index}']` // 몇번째 시도, 몇번째 블럭(?)
     );
 
-    if (event.key === "Backspace") handelBackspace();
+    if (event.key === "Backspace") handleBackspace();
     else if (index === 5) {
       if (event.key === "Enter") handleEnterKey();
       else return;
